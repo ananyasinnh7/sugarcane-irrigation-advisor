@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sugarcane Smart Advisory Portal - ICAR-IISR Inspired</title>
+  <!-- Google Fonts: Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- FontAwesome for Premium Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Core Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  
+  <div class="glass-bg-wrapper"></div>
+  
+  <!-- Header Bar -->
+  <header class="app-header">
+    <div class="header-logo">
+      <i class="fa-solid fa-seedling logo-icon"></i>
+      <div>
+        <h1 id="txt-appTitle">Sugarcane Smart Advisory Portal</h1>
+        <p id="txt-subtitle">Inspired by ICAR-IISR Crop & Irrigation Models</p>
+      </div>
+    </div>
+    
+    <div class="header-controls">
+      <!-- Language Selector -->
+      <div class="control-group language-toggle-container">
+        <span class="control-label"><i class="fa-solid fa-globe"></i> <span id="txt-languageSelect">Language</span></span>
+        <div class="btn-toggle-group">
+          <button id="btn-lang-en" class="btn-lang active" data-lang="en">EN</button>
+          <button id="btn-lang-hi" class="btn-lang" data-lang="hi">हिन्दी</button>
+        </div>
+      </div>
+      
+      <!-- Audio Advisor Control -->
+      <button id="btn-audio-broadcast" class="btn-audio" title="Listen to Advisory">
+        <i class="fa-solid fa-volume-high"></i> <span id="txt-readAdvisory">Listen to Advisory</span>
+      </button>
+      <button id="btn-audio-stop" class="btn-audio btn-danger hidden" title="Stop Audio">
+        <i class="fa-solid fa-volume-xmark"></i> <span id="txt-stopAudio">Stop Voice</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Grid Layout -->
+  <div class="app-container">
+    
+    <!-- Sidebar Navigation -->
+    <nav class="app-sidebar">
+      <button class="nav-item active" data-target="dashboard-section">
+        <i class="fa-solid fa-chart-line"></i> <span id="txt-dashboard">Dashboard</span>
+      </button>
+      <button class="nav-item" data-target="calculator-section">
+        <i class="fa-solid fa-droplet"></i> <span id="txt-calculator">Irrigation Scheduler</span>
+      </button>
+      <button class="nav-item" data-target="tracker-section">
+        <i class="fa-solid fa-bars-progress"></i> <span id="txt-tracker">Growth Activity Tracker</span>
+      </button>
+      <button class="nav-item" data-target="diagnostics-section">
+        <i class="fa-solid fa-bug-slash"></i> <span id="txt-diagnostics">Pest & Disease Suite</span>
+      </button>
+      <button class="nav-item" data-target="mill-section">
+        <i class="fa-solid fa-truck-ramp-box"></i> <span id="txt-millPlanner">Mill Delivery Planner</span>
+      </button>
+    </nav>
+    
+    <!-- Main Content Area -->
+    <main class="app-content">
+      
+      <!-- SECTION 1: DASHBOARD -->
+      <section id="dashboard-section" class="content-section active">
+        <!-- Today's Audio Advisory Bulletin -->
+        <div class="dashboard-banner glass-card">
+          <div class="banner-illustration">
+            <i class="fa-solid fa-cloud-sun-rain banner-icon"></i>
+          </div>
+          <div class="banner-text">
+            <h2 id="txt-todayAdvisory">Today's Advisory Bulletin</h2>
+            <p id="dashboard-bulletin-text">Loading latest agricultural recommendations...</p>
+            <div class="audio-wave hidden" id="voice-wave">
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Summary Cards -->
+        <div class="dashboard-grid">
+          
+          <!-- Weather Widget -->
+          <div class="glass-card metric-card">
+            <h3 id="txt-weatherSim">Weather Forecast</h3>
+            <div class="weather-widget">
+              <i class="fa-solid fa-sun weather-icon" id="weather-icon"></i>
+              <div class="weather-temp-details">
+                <span class="temp" id="weather-temp">36°C</span>
+                <span class="condition" id="weather-desc">Sunny & Dry</span>
+              </div>
+            </div>
+            <p class="card-footer-tip" id="weather-tip">Spraying pesticides: Optimal conditions.</p>
+          </div>
+          
+          <!-- Next Irrigation Status Card -->
+          <div class="glass-card metric-card highlight-blue">
+            <h3 id="txt-irrigationStatus">Irrigation Status</h3>
+            <div class="irrigation-status-display">
+              <span class="big-days" id="dash-irr-days">--</span>
+              <span class="days-label" id="dash-irr-days-lbl">Days Left</span>
+            </div>
+            <p class="card-footer-tip" id="dash-irr-status-desc">Calculate scheduling in the Irrigation tab.</p>
+          </div>
+          
+          <!-- Growth Stage Status Card -->
+          <div class="glass-card metric-card highlight-green">
+            <h3 id="txt-currentStage">Current Stage</h3>
+            <div class="growth-stage-display">
+              <i class="fa-solid fa-wheat-awn stage-icon"></i>
+              <div class="stage-info">
+                <span class="stage-name" id="dash-stage-name">Tillering Stage</span>
+                <span class="stage-days" id="dash-stage-age">Age: 75 days</span>
+              </div>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" id="dash-stage-progress" style="width: 25%"></div>
+            </div>
+          </div>
+          
+        </div>
+
+        <!-- Analytical Charts -->
+        <div class="dashboard-analytics-grid">
+          <div class="glass-card chart-card">
+            <h3 id="txt-soilMoistureTitle">Soil Moisture Depletion Model</h3>
+            <div class="chart-container">
+              <canvas id="soilMoistureChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2: IRRIGATION CALCULATOR (IKSHU-KEDAR) -->
+      <section id="calculator-section" class="content-section">
+        <div class="section-header">
+          <h2 id="txt-calcTitle">Ikshu-Kedar Irrigation Calculator</h2>
+        </div>
+        
+        <div class="split-layout">
+          <!-- Form Panel -->
+          <div class="glass-card form-card">
+            <form id="irrigation-form">
+              <div class="form-group">
+                <label for="input-planting-date" id="txt-plantingDate">Planting Date</label>
+                <input type="date" id="input-planting-date" required>
+              </div>
+
+              <div class="form-group">
+                <label for="input-last-irr-date" id="txt-lastIrrDate">Last Irrigation Date</label>
+                <input type="date" id="input-last-irr-date" required>
+              </div>
+
+              <div class="form-group">
+                <label for="input-soil-type" id="txt-soilType">Soil Type</label>
+                <select id="input-soil-type">
+                  <option value="sandy" id="txt-sandy">Sandy (Fast draining)</option>
+                  <option value="loamy" id="txt-loamy" selected>Loamy (Medium retention)</option>
+                  <option value="clayey" id="txt-clayey">Clayey (High retention)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="input-irr-method" id="txt-irrMethod">Irrigation Method</label>
+                <select id="input-irr-method">
+                  <option value="flooding" id="txt-flooding">Flooding (Traditional)</option>
+                  <option value="furrow" id="txt-furrow" selected>Furrow Irrigation</option>
+                  <option value="drip" id="txt-drip">Drip Irrigation (Recommended)</option>
+                  <option value="sprinkler" id="txt-sprinkler">Sprinkler System</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="input-season" id="txt-season">Crop Season</label>
+                <select id="input-season">
+                  <option value="spring" id="txt-spring" selected>Spring Planting</option>
+                  <option value="autumn" id="txt-autumn">Autumn Planting</option>
+                  <option value="adsali" id="txt-adsali">Adsali (18 Months)</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn-submit" id="txt-calculate">Calculate Next Irrigation</button>
+            </form>
+          </div>
+
+          <!-- Output Panel -->
+          <div class="glass-card output-card">
+            <h3 id="txt-calcResults">Scheduler Recommendation</h3>
+            
+            <div class="results-visualizer">
+              <div class="results-days-ring" id="result-days-ring">
+                <span class="days-num" id="calc-days-val">--</span>
+                <span class="days-text" id="txt-daysRemaining">Days Left</span>
+              </div>
+              
+              <div class="results-details-list">
+                <div class="result-item">
+                  <span class="label" id="txt-nextDate">Recommended Next Date</span>
+                  <span class="value" id="calc-next-date">--</span>
+                </div>
+                <div class="result-item">
+                  <span class="label" id="txt-soilMoistureEst">Estimated Soil Moisture</span>
+                  <span class="value" id="calc-moisture-pct">--</span>
+                </div>
+                <div class="result-item">
+                  <span class="label" id="txt-waterDepth">Recommended Water Depth</span>
+                  <span class="value" id="calc-water-depth">--</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Warning Callout -->
+            <div class="status-callout callout-neutral" id="calc-status-callout">
+              <i class="fa-solid fa-info-circle" id="callout-icon"></i>
+              <p id="calc-status-desc">Please complete the form to see crop irrigation calculations.</p>
+            </div>
+
+            <!-- Specific Advice -->
+            <div class="advice-panel">
+              <h4 id="txt-advisoryTip">Water-Saving Advisory Tip</h4>
+              <p id="calc-advisory-tip">Select options to generate specialized ICAR-IISR irrigation suggestions.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: GROWTH TRACKER -->
+      <section id="tracker-section" class="content-section">
+        <div class="section-header">
+          <h2 id="txt-trackerTitle">Cane Development Lifecycle</h2>
+          <div class="age-badge">
+            <span id="txt-cropAge">Crop Age</span>: <strong id="tracker-crop-age">-- days</strong>
+          </div>
+        </div>
+
+        <!-- Timeline Nav -->
+        <div class="timeline-container glass-card">
+          <div class="timeline-line">
+            <div class="timeline-progress-bar" id="timeline-indicator" style="width: 0%"></div>
+          </div>
+          <div class="timeline-nodes">
+            <div class="timeline-node active" id="node-0" data-stage="0">
+              <div class="node-circle"><i class="fa-solid fa-seedling"></i></div>
+              <span id="txt-germination">Germination (0-60d)</span>
+            </div>
+            <div class="timeline-node" id="node-1" data-stage="1">
+              <div class="node-circle"><i class="fa-solid fa-leaf"></i></div>
+              <span id="txt-tillering">Tillering (60-130d)</span>
+            </div>
+            <div class="timeline-node" id="node-2" data-stage="2">
+              <div class="node-circle"><i class="fa-solid fa-plant-wilt"></i></div>
+              <span id="txt-grandGrowth">Grand Growth (130-270d)</span>
+            </div>
+            <div class="timeline-node" id="node-3" data-stage="3">
+              <div class="node-circle"><i class="fa-solid fa-wheat-awn-circle-exclamation"></i></div>
+              <span id="txt-maturity">Maturity (270-365d+)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task Checklist Card -->
+        <div class="glass-card checklist-card">
+          <div class="checklist-header">
+            <h3 id="txt-tasksTitle">Recommended Crop Management Actions</h3>
+            <span class="checklist-completion" id="checklist-progress-ratio">0/0 Completed</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="checklist-progress-bar" style="width: 0%"></div>
+          </div>
+          <ul class="task-list" id="tracker-tasks-container">
+            <!-- Dynamic task items with checkboxes -->
+            <li class="no-data-msg">Please calculate irrigation to determine crop age and load tasks.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- SECTION 4: PEST & DISEASE DIAGNOSTIC GUIDE -->
+      <section id="diagnostics-section" class="content-section">
+        <div class="section-header">
+          <h2 id="txt-diagTitle">Pest & Disease Reference</h2>
+        </div>
+
+        <!-- Search and Filter Bar -->
+        <div class="search-filter-bar glass-card">
+          <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="diag-search" placeholder="Search pests, diseases, or symptoms...">
+          </div>
+          <div class="filter-pills">
+            <button class="filter-pill active" data-filter="all" id="txt-all">All</button>
+            <button class="filter-pill" data-filter="pest" id="txt-pests">Pests</button>
+            <button class="filter-pill" data-filter="disease" id="txt-diseases">Diseases</button>
+          </div>
+        </div>
+
+        <!-- Diagnostics Cards Grid -->
+        <div class="diagnostics-grid" id="diag-cards-container">
+          <!-- Dynamic cards injected from JS -->
+        </div>
+      </section>
+
+      <!-- SECTION 5: MILL PLANNER -->
+      <section id="mill-section" class="content-section">
+        <div class="section-header">
+          <h2 id="txt-millTitle">Harvest & Mill Delivery Scheduler</h2>
+        </div>
+
+        <div class="split-layout">
+          
+          <!-- Brix & Logistics Input Forms -->
+          <div class="left-forms-column">
+            
+            <!-- Brix Maturity Calculator -->
+            <div class="glass-card sub-card">
+              <h3 id="txt-brixCalculator">Juice Brix Maturity Meter</h3>
+              <div class="form-group mt-1">
+                <label for="input-brix" id="txt-enterBrix">Enter Hand Refractometer Brix Value (%)</label>
+                <div class="brix-input-wrapper">
+                  <input type="number" id="input-brix" min="0" max="30" step="0.1" placeholder="e.g. 18.2">
+                  <span class="percent-symbol">%</span>
+                </div>
+              </div>
+              <div class="brix-maturity-feedback" id="brix-feedback">
+                <i class="fa-solid fa-chart-simple"></i>
+                <div class="brix-status-text">
+                  <span class="status-lbl" id="txt-brixResult">Maturity Prediction Status</span>
+                  <strong class="status-val" id="brix-prediction">Awaiting entry...</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mill Slip Logger -->
+            <div class="glass-card sub-card">
+              <h3 id="txt-addSlip">Log Mill Transport Slip (Parcha)</h3>
+              <form id="mill-slip-form">
+                <div class="form-group">
+                  <label for="input-slip-no" id="txt-slipNumber">Indent Slip / Parcha No.</label>
+                  <input type="text" id="input-slip-no" required placeholder="e.g. UP26-78401">
+                </div>
+                
+                <div class="form-row">
+                  <div class="form-group flex-1">
+                    <label for="input-slip-qty" id="txt-indentQty">Cane Quantity (Tons)</label>
+                    <input type="number" id="input-slip-qty" min="0.1" step="0.1" required placeholder="Tons">
+                  </div>
+                  <div class="form-group flex-1">
+                    <label for="input-slip-vehicle" id="txt-vehicleType">Transport Vehicle</label>
+                    <select id="input-slip-vehicle">
+                      <option value="trolley" id="txt-trolley">Tractor Trolley</option>
+                      <option value="truck" id="txt-truck">Truck</option>
+                      <option value="bullockCart" id="txt-bullockCart">Bullock Cart</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="input-harvest-time" id="txt-harvestDate">Harvest Date & Time</label>
+                  <input type="datetime-local" id="input-harvest-time" required>
+                </div>
+
+                <button type="submit" class="btn-submit" id="txt-deliveryLog">Log Schedule</button>
+              </form>
+            </div>
+            
+          </div>
+
+          <!-- Active Deliveries Listing -->
+          <div class="glass-card logistics-list-card">
+            <h3 id="txt-activeSlips">Active Delivery Tickets</h3>
+            
+            <div class="slips-container" id="slips-container">
+              <!-- Logged slips cards with real-time timers will go here -->
+              <div class="empty-state">
+                <i class="fa-solid fa-truck"></i>
+                <p>No active delivery tickets logged. Add a transport slip to monitor transit delay.</p>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Speech synthesis trigger support scripts -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
